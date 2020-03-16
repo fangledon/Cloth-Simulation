@@ -12,7 +12,7 @@ This project implements the basic cloth simulation in C++ and uses modern OpenGL
   
 ## User Control
 
-Select scenes:
+### Select scenes:
 
 '1': activate scene 1 (curtain)
 
@@ -20,7 +20,7 @@ Select scenes:
 
 '3': activate scene 3 (parachute)
 
-Move objects:
+### Move objects:
 
 'w': move objects in
 
@@ -34,7 +34,7 @@ Move objects:
 
 'l': move objects down
 
-Adjust wind speed:
+### Adjust wind speed:
 
 'up': increase wind speed in negative z direction
 
