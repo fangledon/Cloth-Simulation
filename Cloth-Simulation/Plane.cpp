@@ -91,7 +91,7 @@ void Plane::initBuffers() {
     glBindVertexArray(0);
 }
 
-void Plane::translate(float xOffset, float yOffset, float zOffset) {}
+void Plane::translate(glm::vec3 offset) {}
 
 Plane::~Plane() {
     // Delete the VBOs and the VAO.

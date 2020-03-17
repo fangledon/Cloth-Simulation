@@ -34,7 +34,7 @@ public:
     
     void update();
     
-    void translate(float xOffset, float yOffset, float zOffset);
+    void translate(glm::vec3 offset);
     
     ~Plane();
     

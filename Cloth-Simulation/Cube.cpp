@@ -148,8 +148,8 @@ void Cube::initBuffers() {
     glBindVertexArray(0);
 }
 
-void Cube::translate(float xOffset, float yOffset, float zOffset) {
-    model = glm::translate(model, glm::vec3(xOffset, yOffset, zOffset));
+void Cube::translate(glm::vec3 offset) {
+    model = glm::translate(model, offset);
 }
 
 Cube::~Cube() {

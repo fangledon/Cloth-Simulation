@@ -256,11 +256,11 @@ glm::vec3 Cloth::setFixedPoint(int r, int c) {
     return particles[r * width + c]->p;
 }
 
-void Cloth::translate(float xOffset, float yOffset, float zOffset) {
+void Cloth::translate(glm::vec3 offset) {
     for (unsigned int id : fixedId) {
-        particles[id]->p.x += xOffset;
-        particles[id]->p.y += yOffset;
-        particles[id]->p.z += zOffset;
+        particles[id]->p.x += offset.x;
+        particles[id]->p.y += offset.y;
+        particles[id]->p.z += offset.z;
         positions[id] = particles[id]->p;
     }
     updateBuffers();

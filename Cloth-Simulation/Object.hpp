@@ -22,7 +22,7 @@ public:
 
     virtual void draw(const glm::mat4& viewProjMtx, GLuint shader) = 0;
     virtual void update() = 0;
-    virtual void translate(float xOffset, float yOffset, float zOffset) = 0;
+    virtual void translate(glm::vec3 offset) = 0;
     virtual ~Object() {}
 };
 

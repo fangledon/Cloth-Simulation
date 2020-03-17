@@ -82,7 +82,7 @@ public:
     
     glm::vec3 setFixedPoint(int r, int c);
     
-    void translate(float xOffset, float yOffset, float zOffset);
+    void translate(glm::vec3 offset);
     
     void setGroundHeight(float height) { this->groundHeight = height + EPSILON; }
     

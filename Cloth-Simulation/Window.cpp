@@ -17,6 +17,8 @@ float groundHeight;
 bool leftDown, rightDown;
 int mouseX, mouseY;
 
+glm::vec3 moveSpeed(0.0f);
+
 // The shader program id
 GLuint Window::shaderProgram;
 
@@ -39,7 +41,7 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	// Create and initilize the object to render
-    groundHeight = -2.5f;
+    groundHeight = -3.0f;
     float halfGroundSize = 10.0f;
     
     glm::vec3 planeColor = glm::vec3(0.1f, 0.1f, 0.1f);
@@ -156,6 +158,12 @@ void Window::idleCallback()
     for (Object* obj : objects) {
         obj->update();
     }
+    
+    if (glm::length(moveSpeed) != 0) {
+        for (unsigned int i = 1; i < objects.size(); i++) {
+            objects[i]->translate(moveSpeed);
+        }
+    }
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -184,69 +192,64 @@ void Window::resetCamera() {
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	
 	// Check for a key press.
-	if (action == GLFW_PRESS)
-	{
-		switch (key) 
-		{
+	if (action == GLFW_PRESS) {
+		switch (key) {
             case GLFW_KEY_ESCAPE: {
                 // Close the window. This causes the program to also terminate.
                 glfwSetWindowShouldClose(window, GL_TRUE);
                 break;
             }
             case GLFW_KEY_A: {
-                for (unsigned int i = 1; i < objects.size(); i++) {
-                    objects[i]->translate(-0.1f, 0.0f, 0.0f);
-                }
+                moveSpeed.x -= 0.001f;
                 break;
             }
             case GLFW_KEY_D: {
-                for (unsigned int i = 1; i < objects.size(); i++) {
-                    objects[i]->translate(0.1f, 0.0f, 0.0f);
-                }
+                moveSpeed.x += 0.001f;
                 break;
             }
             case GLFW_KEY_W: {
-                for (unsigned int i = 1; i < objects.size(); i++) {
-                    objects[i]->translate(0.0f, 0.0f, -0.1f);
-                }
+                moveSpeed.z -= 0.001f;
                 break;
             }
             case GLFW_KEY_S: {
-                for (unsigned int i = 1; i < objects.size(); i++) {
-                    objects[i]->translate(0.0f, 0.0f, 0.1f);
-                }
-                break;
-            }
-            case GLFW_KEY_O: {
-                for (unsigned int i = 1; i < objects.size(); i++) {
-                    objects[i]->translate(0.0f, 0.1f, 0.0f);
-                }
+                moveSpeed.z += 0.001f;
                 break;
             }
             case GLFW_KEY_L: {
-                for (unsigned int i = 1; i < objects.size(); i++) {
-                    objects[i]->translate(0.0f, -0.1f, 0.0f);
-                }
+                moveSpeed.y -= 0.001f;
+                break;
+            }
+            case GLFW_KEY_O: {
+                moveSpeed.y += 0.001f;
                 break;
             }
             case GLFW_KEY_UP: {
-                glm::vec3 newWind = cloth->getWind() + glm::vec3(0.0f, 0.0f, -0.2f);
+                glm::vec3 newWind = cloth->getWind();
+                newWind.z -= 0.2f;
                 cloth->setWind(newWind);
                 break;
             }
             case GLFW_KEY_DOWN: {
-                glm::vec3 newWind = cloth->getWind() + glm::vec3(0.0f, 0.0f, 0.2f);
+                glm::vec3 newWind = cloth->getWind();
+                newWind.z += 0.2f;
                 cloth->setWind(newWind);
                 break;
             }
             case GLFW_KEY_LEFT: {
-                glm::vec3 newWind = cloth->getWind() + glm::vec3(-0.2f, 0.0f, 0.0f);
+                glm::vec3 newWind = cloth->getWind();
+                newWind.x += 0.2f;
                 cloth->setWind(newWind);
                 break;
             }
             case GLFW_KEY_RIGHT: {
-                glm::vec3 newWind = cloth->getWind() + glm::vec3(0.2f, 0.0f, 0.0f);
+                glm::vec3 newWind = cloth->getWind();
+                newWind.x -= 0.2f;
                 cloth->setWind(newWind);
+                break;
+            }
+            case GLFW_KEY_SPACE: {
+                moveSpeed = glm::vec3(0.0f);
+                cloth->setWind(glm::vec3(0.0f));
                 break;
             }
             case GLFW_KEY_1: {
@@ -305,6 +308,7 @@ void Window::setScene(int sceneNum) {
     switch (sceneNum) {
         case 1: { // scene 1: vertical cloth with fixed first row (curtain)
             resetCamera();
+            moveSpeed = glm::vec3(0.0f);
             
             while (objects.size() > 1) { // delete non-plane object
                 delete objects.back();
@@ -321,12 +325,12 @@ void Window::setScene(int sceneNum) {
         }
         case 2: { // scene 2: vertical cloth with 3 fixed points (flag)
             resetCamera();
+            moveSpeed = glm::vec3(0.0f);
             
             while (objects.size() > 1) { // delete non-plane object
                 delete objects.back();
                 objects.pop_back();
             }
-            
             glm::vec3 color = glm::vec3(0.95f, 0.08f, 0.0f);
             cloth = new Cloth(50, 60, 0.06f, 1.0f, color, true);
             cloth->setFixedPoint(0, 0);
@@ -339,6 +343,7 @@ void Window::setScene(int sceneNum) {
         }
         case 3: { // scene 3: horizontal cloth with fixed corners (parachute)
             resetCamera();
+            moveSpeed = glm::vec3(0.0f);
             
             while (objects.size() > 1) { // delete non-plane object
                 delete objects.back();
@@ -354,7 +359,7 @@ void Window::setScene(int sceneNum) {
             glm::vec3 b0 = cloth->setFixedPoint(0, width - 1);
             glm::vec3 c0 = cloth->setFixedPoint(height - 1, width - 1);
             glm::vec3 d0 = cloth->setFixedPoint(height - 1, 0);
-            cloth->setWind(glm::vec3(0.0f, 5.0f, -0.2f)); // initial wind speed
+            cloth->setWind(glm::vec3(0.0f, 5.0f, -0.2f));
             cloth->setGroundHeight(groundHeight);
             objects.push_back(cloth);
             
